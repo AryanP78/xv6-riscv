@@ -60,6 +60,16 @@ void*           kalloc(void);
 void            kfree(void *);
 void            kinit(void);
 
+// pagerep.c
+void            pagerep_init(void);
+void            pagerep_on_kfree(uint64);
+void*           pagerep_alloc(pagetable_t, uint64, int, int);
+void            pagerep_tick(void);
+void            pagerep_set_policy(int);
+int             pagerep_get_policy(void);
+void            pagerep_get_stats(uint64*, uint64*);
+void            pagerep_reset_stats(void);
+
 // log.c
 void            initlog(int, struct superblock*);
 void            log_write(struct buf*);

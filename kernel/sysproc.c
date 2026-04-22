@@ -107,3 +107,51 @@ sys_uptime(void)
   release(&tickslock);
   return xticks;
 }
+
+// setpriority(int prio, int deadline)
+// Set the calling process's DAPRA priority class and deadline.
+// prio: 1=BG, 2=INT, 3=RT
+// deadline: absolute tick deadline (use uptime() + N)
+uint64
+sys_setpriority(void)
+{
+  int prio, deadline;
+  argint(0, &prio);
+  argint(1, &deadline);
+  if (prio < 1 || prio > 3)
+    return -1;
+  struct proc *p = myproc();
+  p->priority = prio;
+  p->deadline = deadline;
+  return 0;
+}
+
+// getstats(uint64 *faults, uint64 *evictions)
+// Copy page replacement statistics to user-space pointers.
+uint64
+sys_getstats(void)
+{
+  uint64 uptr_faults, uptr_evictions;
+  argaddr(0, &uptr_faults);
+  argaddr(1, &uptr_evictions);
+  uint64 f, e;
+  pagerep_get_stats(&f, &e);
+  struct proc *p = myproc();
+  if (copyout(p->pagetable, uptr_faults,    (char*)&f, sizeof(f)) < 0) return -1;
+  if (copyout(p->pagetable, uptr_evictions, (char*)&e, sizeof(e)) < 0) return -1;
+  return 0;
+}
+
+// setpolicy(int policy)
+// 0=FIFO, 1=LRU, 2=LFU, 3=DAPRA
+uint64
+sys_setpolicy(void)
+{
+  int policy;
+  argint(0, &policy);
+  if (policy < 0 || policy > 3)
+    return -1;
+  pagerep_set_policy(policy);
+  pagerep_reset_stats();
+  return 0;
+}

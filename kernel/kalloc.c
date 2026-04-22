@@ -27,6 +27,7 @@ void
 kinit()
 {
   initlock(&kmem.lock, "kmem");
+  pagerep_init();
   freerange(end, (void*)PHYSTOP);
 }
 
@@ -50,6 +51,9 @@ kfree(void *pa)
 
   if(((uint64)pa % PGSIZE) != 0 || (char*)pa < end || (uint64)pa >= PHYSTOP)
     panic("kfree");
+
+  // Notify page replacement tracker before filling with junk
+  pagerep_on_kfree((uint64)pa);
 
   // Fill with junk to catch dangling refs.
   memset(pa, 1, PGSIZE);

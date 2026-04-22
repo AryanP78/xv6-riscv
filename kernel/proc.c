@@ -146,6 +146,9 @@ found:
   p->context.ra = (uint64)forkret;
   p->context.sp = p->kstack + PGSIZE;
 
+  p->priority = 1;   // default: background
+  p->deadline = 0;   // no deadline
+
   return p;
 }
 
