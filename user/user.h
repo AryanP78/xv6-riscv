@@ -24,6 +24,9 @@ int getpid(void);
 char* sys_sbrk(int,int);
 int pause(int);
 int uptime(void);
+int setpriority(int prio, int deadline);
+int getstats(uint64 *faults, uint64 *evictions);
+int setpolicy(int policy);
 
 // ulib.c
 int stat(const char*, struct stat*);

@@ -169,6 +169,10 @@ clockintr()
     ticks++;
     wakeup(&ticks);
     release(&tickslock);
+
+    // Scan PTE_A bits for all processes and apply priority aging.
+    // Only CPU 0 does this to avoid races on the frame table.
+    pagerep_tick();
   }
 
   // ask for the next timer interrupt. this also clears

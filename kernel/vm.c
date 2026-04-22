@@ -461,7 +461,8 @@ vmfault(pagetable_t pagetable, uint64 va, int read)
   if(ismapped(pagetable, va)) {
     return 0;
   }
-  mem = (uint64) kalloc();
+  // Use DAPRA page replacement allocator (evicts if frame limit reached)
+  mem = (uint64) pagerep_alloc(p->pagetable, va, p->priority, p->deadline);
   if(mem == 0)
     return 0;
   memset((void *) mem, 0, PGSIZE);

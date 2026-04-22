@@ -8,6 +8,7 @@ OBJS = \
   $K/printf.o \
   $K/uart.o \
   $K/kalloc.o \
+  $K/pagerep.o \
   $K/spinlock.o \
   $K/string.o \
   $K/main.o \
@@ -52,7 +53,7 @@ TOOLPREFIX := $(shell if riscv64-unknown-elf-objdump -i 2>&1 | grep 'elf64-big' 
 	echo "***" 1>&2; exit 1; fi)
 endif
 
-QEMU = qemu-system-riscv64
+QEMU = /opt/homebrew/bin/qemu-system-riscv64
 MIN_QEMU_VERSION = 7.2
 
 CC = $(TOOLPREFIX)gcc
@@ -145,6 +146,10 @@ UPROGS=\
 	$U/_logstress\
 	$U/_forphan\
 	$U/_dorphan\
+	$U/_benchmark\
+	$U/_simulate\
+	$U/_dapra_final\
+	$U/_rt_demo\
 
 fs.img: mkfs/mkfs README $(UPROGS)
 	mkfs/mkfs fs.img README $(UPROGS)

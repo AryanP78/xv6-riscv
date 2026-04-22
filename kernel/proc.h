@@ -104,4 +104,8 @@ struct proc {
   struct file *ofile[NOFILE];  // Open files
   struct inode *cwd;           // Current directory
   char name[16];               // Process name (debugging)
+
+  // DAPRA page replacement fields
+  int priority;                // 1=BG, 2=INT, 3=RT (default 1)
+  int deadline;                // absolute tick deadline (0 = none)
 };
